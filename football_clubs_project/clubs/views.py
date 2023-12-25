@@ -3,7 +3,12 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse
 
-menu = ['About', 'Add club', 'Feedback', 'Login']
+
+menu = [{'title': 'About', 'url_name': 'about'},
+        {'title': 'Add club', 'url_name': 'add_club'},
+        {'title': 'Feedback', 'url_name': 'feedback'},
+        {'title': 'Login', 'url_name': 'login'}
+        ]
 data_db = [
     {'id': 1, 'title': 'Zenit', 'content': 'info_zenit', 'is_published': True},
     {'id': 2, 'title': 'Liverpool', 'content': 'info_liverpool', 'is_published': True},
@@ -15,7 +20,7 @@ def index(request):
     data = {
         'menu': menu,
         'title': 'Main Page',
-        'posts': data_db
+        'clubs': data_db
     }
     return render(request, 'clubs/index.html', context=data)
 
@@ -23,24 +28,26 @@ def index(request):
 def about(request):
     data = {
         'manu': menu,
-        'title': 'Main Page'
+        'title': 'About'
     }
     return render(request, 'clubs/about.html', data)
 
 
-def countries(request, cntr_id):
-    return HttpResponse(f'<h1> Main page</h1><p>Country id = {cntr_id}</p>')
+def show_club(request, club_id):
+    return HttpResponse(f'Info about club_id={club_id}')
 
 
-def countries_by_slug(request, cntr_slug):
-    return HttpResponse(f'<h1> Main page</h1><p>Country slug = {cntr_slug}</p>')
+def add_club(request):
+    return HttpResponse('Add new club')
 
 
-def archive(request, year):
-    if 1991 <= year <= 2023:
-        return HttpResponse(f'<h1> Main page</h1><p>Archive by year = {year}</p>')
-    uri = reverse('countries', args=('portugal', ))
-    return HttpResponsePermanentRedirect(uri)
+def feedback(request):
+    return HttpResponse('Tell us what you want')
+
+
+def login(request):
+    return HttpResponse('Authorization form')
+
 
 
 def page_not_found(request, exception):

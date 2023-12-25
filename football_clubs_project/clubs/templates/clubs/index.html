@@ -5,14 +5,22 @@
     <title>{{ title }}</title>
 </head>
 <body>
-<p>{{ menu|join:' | ' }}</p>
+<ul>
+    <li><a href="{% url 'home' %}">Main Page</a></li>
+    {% for part in menu %}
+    {% if not forloop.last %}<li>{% else %}<li class="last">{% endif %}
+        <a href="{% url part.url_name %}">{{ part.title }}</a>
+    </li>
+    {% endfor %}
+</ul>
 <h1>{{ title }}</h1>
 <ul>
-    {% for p in posts %}
-    {% if p.is_published %}
+    {% for club in clubs %}
+    {% if club.is_published %}
     <li>
-        <h2>{{ p.title }}</h2>
-        <p>p.content</p>
+        <h2>{{ club.title }}</h2>
+        <p>{{ club.content }}</p>
+        <p><a href="{% url 'club' club_id=club.id %}">Club info</a></p>
         {% if not forloop.last %}
         <hr>
         {% endif %}
