@@ -3,15 +3,25 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse
 
+menu = ['About', 'Add club', 'Feedback', 'Login']
+
 
 def index(request):
     # t = render_to_string('clubs/index.html')
     # return HttpResponse(t)
-    return render(request, 'clubs/index.html')
+    data = {
+        'menu': menu,
+        'title': 'Main Page'
+    }
+    return render(request, 'clubs/index.html', context=data)
 
 
 def about(request):
-    return render(request, 'clubs/about.html')
+    data = {
+        'manu': menu,
+        'title': 'Main Page'
+    }
+    return render(request, 'clubs/about.html', data)
 
 
 def countries(request, cntr_id):
