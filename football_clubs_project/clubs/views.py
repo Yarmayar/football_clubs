@@ -1,5 +1,6 @@
-from django.http import HttpResponse, Http404, HttpResponseNotFound
-from django.shortcuts import render
+from django.http import HttpResponse, Http404, HttpResponseNotFound, HttpResponsePermanentRedirect
+from django.shortcuts import render, redirect
+from django.urls import reverse
 
 
 def index(request):
@@ -17,7 +18,8 @@ def countries_by_slug(request, cntr_slug):
 def archive(request, year):
     if 1991 <= year <= 2023:
         return HttpResponse(f'<h1> Main page</h1><p>Archive by year = {year}</p>')
-    raise Http404()
+    uri = reverse('countries', args=('portugal', ))
+    return HttpResponsePermanentRedirect(uri)
 
 
 def page_not_found(request, exception):
