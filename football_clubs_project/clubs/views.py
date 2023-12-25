@@ -1,10 +1,17 @@
 from django.http import HttpResponse, Http404, HttpResponseNotFound, HttpResponsePermanentRedirect
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.urls import reverse
 
 
 def index(request):
-    return HttpResponse('<h1> Main page</h1>')
+    # t = render_to_string('clubs/index.html')
+    # return HttpResponse(t)
+    return render(request, 'clubs/index.html')
+
+
+def about(request):
+    return render(request, 'clubs/about.html')
 
 
 def countries(request, cntr_id):
