@@ -4,14 +4,18 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 
 menu = ['About', 'Add club', 'Feedback', 'Login']
+data_db = [
+    {'id': 1, 'title': 'Zenit', 'content': 'info_zenit', 'is_published': True},
+    {'id': 2, 'title': 'Liverpool', 'content': 'info_liverpool', 'is_published': True},
+    {'id': 3, 'title': 'Monaco', 'content': 'info_monaco', 'is_published': True},
+]
 
 
 def index(request):
-    # t = render_to_string('clubs/index.html')
-    # return HttpResponse(t)
     data = {
         'menu': menu,
-        'title': 'Main Page'
+        'title': 'Main Page',
+        'posts': data_db
     }
     return render(request, 'clubs/index.html', context=data)
 
