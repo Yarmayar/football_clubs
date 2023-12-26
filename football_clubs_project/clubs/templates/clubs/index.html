@@ -1,24 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>{{ title }}</h1>
-{% include 'clubs/includes/nav.html' only %}
-
-<ul>
-    {% for club in clubs %}
-    {% if club.is_published %}
-    <li>
-        <h2>{{ club.title }}</h2>
-        <p>{{ club.content }}</p>
-        <p><a href="{% url 'club' club_id=club.id %}">Club info</a></p>
-        {% if not forloop.last %}
-        <hr>
-        {% endif %}
-    </li>
-    {% endif %}
-    {% endfor %}
+<ul class="list-articles">
+	{% for club in clubs %}
+	{% if club.is_published %}
+			<li><h2>{{club.title}}</h2>
+    {% autoescape off %}
+	{{club.content|linebreaks|truncatewords:40}}
+    {% endautoescape %}
+			<div class="clear"></div>
+			<p class="link-read-post"><a href="{% url 'club' club.id %}">Read about club</a></p>
+			</li>
+	{% endif %}
+	{% endfor %}
 </ul>
-
-{% include 'clubs/includes/nav.html' %}
-
 {% endblock %}
