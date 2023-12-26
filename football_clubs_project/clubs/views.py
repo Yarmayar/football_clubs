@@ -27,7 +27,7 @@ def index(request):
 
 def about(request):
     data = {
-        'manu': menu,
+        'menu': menu,
         'title': 'About'
     }
     return render(request, 'clubs/about.html', data)
@@ -47,7 +47,6 @@ def feedback(request):
 
 def login(request):
     return HttpResponse('Authorization form')
-
 
 
 def page_not_found(request, exception):
