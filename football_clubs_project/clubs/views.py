@@ -24,7 +24,7 @@ cntr_db = [
 
 
 def index(request):
-    clubs = Clubs.objects.filter(is_published=1)
+    clubs = Clubs.published.all()
     data = {
         'menu': menu,
         'title': 'Main Page',
