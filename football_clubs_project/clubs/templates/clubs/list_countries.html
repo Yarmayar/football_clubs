@@ -2,6 +2,6 @@
 {% if cntr_selected == country.id %}
   <li class="selected">{{ country.name }}</li>
 {% else %}
-  <li><a href="{% url 'country' country.id %}">{{ country.name }}</a></li>
+  <li><a href="{{ country.get_absolute_url }}">{{ country.name }}</a></li>
 {% endif %}
 {% endfor %}

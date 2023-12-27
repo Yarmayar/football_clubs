@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
 
-from clubs.models import Clubs
+from clubs.models import Clubs, Country
 
 menu = [{'title': 'About', 'url_name': 'about'},
         {'title': 'Add club', 'url_name': 'add_club'},
@@ -14,12 +14,6 @@ data_db = [
     {'id': 1, 'title': 'Zenit', 'content': 'info_zenit', 'is_published': True},
     {'id': 2, 'title': 'Liverpool', 'content': 'info_liverpool', 'is_published': True},
     {'id': 3, 'title': 'Monaco', 'content': 'info_monaco', 'is_published': True},
-]
-
-cntr_db = [
-    {'id': 1, 'name': 'Russian'},
-    {'id': 2, 'name': 'European'},
-    {'id': 3, 'name': 'American'},
 ]
 
 
@@ -66,12 +60,14 @@ def login(request):
     return HttpResponse('Authorization form')
 
 
-def show_country(request, cntr_id):
+def show_country(request, country_slug):
+    country = get_object_or_404(Country, slug=country_slug)
+    clubs = Clubs.published.filter(country__slug=country_slug)
     data = {
         'menu': menu,
-        'title': 'Main Page',
-        'clubs': data_db,
-        'cntr_selected': cntr_id,
+        'title': country.name,
+        'clubs': clubs,
+        'cntr_selected': country.id,
     }
     return render(request, 'clubs/index.html', context=data)
 

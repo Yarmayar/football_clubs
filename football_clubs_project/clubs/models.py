@@ -49,3 +49,5 @@ class Country(models.Model):
             models.Index(fields=['name'])
         ]
 
+    def get_absolute_url(self):
+        return reverse('country', kwargs={'country_slug': self.slug})

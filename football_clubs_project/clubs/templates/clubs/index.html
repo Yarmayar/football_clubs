@@ -3,6 +3,10 @@
 {% block content %}
 <ul class="list-articles">
 	{% for club in clubs %}
+		<li><div class="article-panel">
+			<p class="first">Country: {{ club.country.name }}</p>
+			<p class="last">Info updated: {{ club.time_update|date:"d-m-Y H:i:s"}}</p>
+		</div>
 			<li><h2>{{club.title}}</h2>
     {% autoescape off %}
 	{{club.content|linebreaks|truncatewords:40}}
