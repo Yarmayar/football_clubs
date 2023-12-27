@@ -9,7 +9,7 @@
 	{{club.content|linebreaks|truncatewords:40}}
     {% endautoescape %}
 			<div class="clear"></div>
-			<p class="link-read-post"><a href="{% url 'club' club.id %}">Read about club</a></p>
+			<p class="link-read-post"><a href="{{ club.get_absolute_url }}">Read about club</a></p>
 			</li>
 	{% endif %}
 	{% endfor %}

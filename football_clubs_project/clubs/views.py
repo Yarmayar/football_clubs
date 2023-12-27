@@ -1,8 +1,9 @@
 from django.http import HttpResponse, Http404, HttpResponseNotFound, HttpResponsePermanentRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
 
+from clubs.models import Clubs
 
 menu = [{'title': 'About', 'url_name': 'about'},
         {'title': 'Add club', 'url_name': 'add_club'},
@@ -23,10 +24,11 @@ cntr_db = [
 
 
 def index(request):
+    clubs = Clubs.objects.filter(is_published=1)
     data = {
         'menu': menu,
         'title': 'Main Page',
-        'clubs': data_db,
+        'clubs': clubs,
         'cntr_selected': 0,
     }
     return render(request, 'clubs/index.html', context=data)
@@ -40,8 +42,16 @@ def about(request):
     return render(request, 'clubs/about.html', data)
 
 
-def show_club(request, club_id):
-    return HttpResponse(f'Info about club_id={club_id}')
+def show_club(request, club_slug):
+    club = get_object_or_404(Clubs, slug=club_slug)
+
+    data = {
+        'menu': menu,
+        'title': club.title,
+        'club': club,
+        'cntr_selected': 0,
+    }
+    return render(request, 'clubs/club.html', data)
 
 
 def add_club(request):
