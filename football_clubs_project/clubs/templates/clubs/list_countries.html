@@ -1,0 +1,7 @@
+{% for country in countries %}
+{% if cntr_selected == country.id %}
+  <li class="selected">{{ country.name }}</li>
+{% else %}
+  <li><a href="{% url 'country' country.id %}">{{ country.name }}</a></li>
+{% endif %}
+{% endfor %}

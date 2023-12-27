@@ -15,12 +15,19 @@ data_db = [
     {'id': 3, 'title': 'Monaco', 'content': 'info_monaco', 'is_published': True},
 ]
 
+cntr_db = [
+    {'id': 1, 'name': 'Russian'},
+    {'id': 2, 'name': 'European'},
+    {'id': 3, 'name': 'American'},
+]
+
 
 def index(request):
     data = {
         'menu': menu,
         'title': 'Main Page',
-        'clubs': data_db
+        'clubs': data_db,
+        'cntr_selected': 0,
     }
     return render(request, 'clubs/index.html', context=data)
 
@@ -47,6 +54,16 @@ def feedback(request):
 
 def login(request):
     return HttpResponse('Authorization form')
+
+
+def show_country(request, cntr_id):
+    data = {
+        'menu': menu,
+        'title': 'Main Page',
+        'clubs': data_db,
+        'cntr_selected': cntr_id,
+    }
+    return render(request, 'clubs/index.html', context=data)
 
 
 def page_not_found(request, exception):

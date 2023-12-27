@@ -1,5 +1,6 @@
 {% load static %}
-<!DOCTYPE html>
+{% load clubs_tags %}
+
 <html>
 <head>
 	<title>{{title}}</title>
@@ -30,10 +31,12 @@
 <!-- Sidebar слева -->
 	<td valign="top" class="left-chapters">
 	<ul id="leftchapters">
+		{% if not cntr_selected %}
 		<li class="selected">All clubs</li>
-		<li><a href="#">Russian</a></li>
-		<li><a href="#">European</a></li>
-		<li><a href="#">American</a></li>
+		{% else %}
+		<li><a href="{% url 'home' %}">All clubs</a></li>
+		{% endif %}
+		{% show_countries cntr_selected %}
 		<li class="share">
 		<p>Our Channel</p>
 		<a class="share-yt" href="https://www.youtube.com/channel/UClJzWfGWuGJL2t-3dYKcHTA/playlists" target="_blank" rel="nofollow"></a>
