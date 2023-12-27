@@ -18,7 +18,7 @@ class Clubs(models.Model):
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(choices=Status.choices, default=Status.DRAFT)
-    country = models.ForeignKey('Country', on_delete=models.PROTECT)
+    country = models.ForeignKey('Country', on_delete=models.PROTECT, related_name='clubs')
 
     objects = models.Manager()
     published = PublishedManager()
@@ -42,3 +42,10 @@ class Country(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ['name']
+        indexes = [
+            models.Index(fields=['name'])
+        ]
+
