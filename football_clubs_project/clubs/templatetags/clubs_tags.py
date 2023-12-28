@@ -1,6 +1,6 @@
 from django import template
 from clubs import views
-from clubs.models import Country
+from clubs.models import Country, TagClub
 
 register = template.Library()
 
@@ -14,3 +14,9 @@ def get_countries():
 def show_countries(cntr_selected):
     countries = Country.objects.all()
     return {'countries': countries, 'cntr_selected': cntr_selected}
+
+
+@register.inclusion_tag('clubs/list_tags.html')
+def show_all_tags():
+    tags = TagClub.objects.all()
+    return {'tags': tags}

@@ -19,9 +19,11 @@ class Clubs(models.Model):
     time_update = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(choices=Status.choices, default=Status.DRAFT)
     country = models.ForeignKey('Country', on_delete=models.PROTECT, related_name='clubs')
+    tags = models.ManyToManyField('TagClub', blank=True, related_name='tags')
 
     objects = models.Manager()
     published = PublishedManager()
+    coach = models.OneToOneField('Coach', on_delete=models.SET_NULL, null=True, blank=True, related_name='job')
 
     def __str__(self):
         return self.title
@@ -51,3 +53,22 @@ class Country(models.Model):
 
     def get_absolute_url(self):
         return reverse('country', kwargs={'country_slug': self.slug})
+
+
+class TagClub(models.Model):
+    tag = models.CharField(max_length=100, db_index=True)
+    slug = models.SlugField(max_length=255, unique=True, db_index=True)
+
+    def __str__(self):
+        return self.tag
+
+    def get_absolute_url(self):
+        return reverse('tag', kwargs={'tag_slug': self.slug})
+
+
+class Coach(models.Model):
+    name = models.TextField(max_length=255)
+    age = models.IntegerField(null=True)
+
+    def __str__(self):
+        return self.name

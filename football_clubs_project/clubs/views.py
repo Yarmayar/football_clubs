@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
 
-from clubs.models import Clubs, Country
+from clubs.models import Clubs, Country, TagClub
 
 menu = [{'title': 'About', 'url_name': 'about'},
         {'title': 'Add club', 'url_name': 'add_club'},
@@ -43,7 +43,7 @@ def show_club(request, club_slug):
         'menu': menu,
         'title': club.title,
         'club': club,
-        'cntr_selected': 0,
+        'cntr_selected': None,
     }
     return render(request, 'clubs/club.html', data)
 
@@ -70,6 +70,19 @@ def show_country(request, country_slug):
         'cntr_selected': country.id,
     }
     return render(request, 'clubs/index.html', context=data)
+
+
+def show_tag_clubslist(request, tag_slug):
+    tag = get_object_or_404(TagClub, slug=tag_slug)
+    clubs = tag.tags.filter(is_published=Clubs.Status.PUBLISHED)
+    context = {
+        'menu': menu,
+        'title': f'Tag: {tag.tag}',
+        'clubs': clubs,
+        'cntr_selected': None,
+    }
+    return render(request, 'clubs/index.html', context)
+
 
 
 def page_not_found(request, exception):

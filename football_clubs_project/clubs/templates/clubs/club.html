@@ -1,5 +1,18 @@
 {% extends 'base.html' %}
 
+{% block breadcrumbs %}
+{% with club.tags.all as tags %}
+{% if tags %}
+  <ul class="tags-list">
+    <li>Tags:</li>
+    {% for tag in tags %}
+      <li><a href="{{ tag.get_absolute_url }}">{{ tag.tag }}</a></li>
+    {% endfor %}
+  </ul>
+{% endif %}
+{% endwith %}
+{% endblock %}....
+
 {% block content %}
 <h1>{{ title }}</h1>
 
