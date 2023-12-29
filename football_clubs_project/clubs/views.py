@@ -18,7 +18,7 @@ data_db = [
 
 
 def index(request):
-    clubs = Clubs.published.all()
+    clubs = Clubs.published.all().select_related('country')
     data = {
         'menu': menu,
         'title': 'Main Page',
@@ -62,7 +62,7 @@ def login(request):
 
 def show_country(request, country_slug):
     country = get_object_or_404(Country, slug=country_slug)
-    clubs = Clubs.published.filter(country__slug=country_slug)
+    clubs = Clubs.published.filter(country__slug=country_slug).select_related('country')
     data = {
         'menu': menu,
         'title': country.name,
@@ -74,7 +74,7 @@ def show_country(request, country_slug):
 
 def show_tag_clubslist(request, tag_slug):
     tag = get_object_or_404(TagClub, slug=tag_slug)
-    clubs = tag.tags.filter(is_published=Clubs.Status.PUBLISHED)
+    clubs = tag.tags.filter(is_published=Clubs.Status.PUBLISHED).select_related('country')
     context = {
         'menu': menu,
         'title': f'Tag: {tag.tag}',
