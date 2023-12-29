@@ -2,6 +2,23 @@ from django.contrib import admin, messages
 from .models import Clubs, Country
 
 
+class HaveCoach(admin.SimpleListFilter):
+    title = 'Статус клубов'
+    parameter_name = 'status'
+
+    def lookups(self, request, model_admin):
+        return [
+            ('with_coach', 'Есть тренер'),
+            ('vacancy', 'В поисках тренера')
+        ]
+
+    def queryset(self, request, queryset):
+        if self.value() == 'with_coach':
+            return queryset.filter(coach__isnull=False)
+        elif self.value() == 'vacancy':
+            return queryset.filter(coach__isnull=True)
+
+
 @admin.register(Clubs)
 class ClubsAdmin(admin.ModelAdmin):
     list_display = ['title', 'time_create', 'is_published', 'country', 'brief_info']
@@ -10,6 +27,8 @@ class ClubsAdmin(admin.ModelAdmin):
     list_editable = ['is_published', 'country']
     list_per_page = 10
     actions = ['set_published', 'set_draft']
+    search_fields = ['title', 'country__name']
+    list_filter = [HaveCoach, 'country__name', 'is_published']
 
     @admin.display(description='Содержание', ordering='content')
     def brief_info(self, club: Clubs):

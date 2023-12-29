@@ -10,11 +10,6 @@ menu = [{'title': 'About', 'url_name': 'about'},
         {'title': 'Feedback', 'url_name': 'feedback'},
         {'title': 'Login', 'url_name': 'login'}
         ]
-data_db = [
-    {'id': 1, 'title': 'Zenit', 'content': 'info_zenit', 'is_published': True},
-    {'id': 2, 'title': 'Liverpool', 'content': 'info_liverpool', 'is_published': True},
-    {'id': 3, 'title': 'Monaco', 'content': 'info_monaco', 'is_published': True},
-]
 
 
 def index(request):
