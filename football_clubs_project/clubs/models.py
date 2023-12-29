@@ -12,13 +12,14 @@ class Clubs(models.Model):
         DRAFT = 0, 'Draft'  # 0 будет записываться в БД, текст будет отображаться в виджетах
         PUBLISHED = 1, 'Published'
 
-    title = models.CharField(max_length=255)
-    slug = models.SlugField(max_length=255, unique=True, db_index=True)
-    content = models.TextField(blank=True)
-    time_create = models.DateTimeField(auto_now_add=True)
-    time_update = models.DateTimeField(auto_now=True)
-    is_published = models.BooleanField(choices=Status.choices, default=Status.DRAFT)
-    country = models.ForeignKey('Country', on_delete=models.PROTECT, related_name='clubs')
+    title = models.CharField(max_length=255, verbose_name='Название')
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
+    content = models.TextField(blank=True, verbose_name='Содержание')
+    time_create = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
+    time_update = models.DateTimeField(auto_now=True, verbose_name='Время обновления')
+    is_published = models.BooleanField(choices=tuple(map(lambda x: (bool(x[0]), x[1]), Status.choices)),
+                                                     default=Status.DRAFT, verbose_name='Статус')
+    country = models.ForeignKey('Country', on_delete=models.PROTECT, related_name='clubs', verbose_name='Страна')
     tags = models.ManyToManyField('TagClub', blank=True, related_name='tags')
 
     objects = models.Manager()
@@ -33,19 +34,23 @@ class Clubs(models.Model):
         indexes = [
             models.Index(fields=['-time_create'])
         ]
+        verbose_name = 'Футбольный клуб'
+        verbose_name_plural = 'Футбольные клубы'
 
     def get_absolute_url(self):
         return reverse('club', kwargs={'club_slug': self.slug})
 
 
 class Country(models.Model):
-    name = models.CharField(max_length=255, unique=True, db_index=True)
-    slug = models.SlugField(max_length=255, unique=True, db_index=True)
+    name = models.CharField(max_length=255, unique=True, db_index=True, verbose_name='Страна')
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
 
     def __str__(self):
         return self.name
 
     class Meta:
+        verbose_name = 'Страна'
+        verbose_name_plural = 'Страны'
         ordering = ['name']
         indexes = [
             models.Index(fields=['name'])
