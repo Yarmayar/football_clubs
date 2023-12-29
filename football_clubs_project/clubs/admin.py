@@ -21,6 +21,11 @@ class HaveCoach(admin.SimpleListFilter):
 
 @admin.register(Clubs)
 class ClubsAdmin(admin.ModelAdmin):
+    fields = ['title', 'slug', 'content', 'country', 'tags', 'coach']
+    # readonly_fields = ['slug']  # для отображения полей без возможности редактировать их,
+    # при использовании поля в prepopulated_fields его нельзя оставить нередактируемым
+    # exclude = ['title']  # альтернатива field, отображать все, кроме перечисленого
+    prepopulated_fields = {'slug': ('title', )}
     list_display = ['title', 'time_create', 'is_published', 'country', 'brief_info']
     list_display_links = ['title']
     ordering = ['-time_create', 'title']
@@ -29,6 +34,7 @@ class ClubsAdmin(admin.ModelAdmin):
     actions = ['set_published', 'set_draft']
     search_fields = ['title', 'country__name']
     list_filter = [HaveCoach, 'country__name', 'is_published']
+    filter_horizontal = ['tags']
 
     @admin.display(description='Содержание', ordering='content')
     def brief_info(self, club: Clubs):
