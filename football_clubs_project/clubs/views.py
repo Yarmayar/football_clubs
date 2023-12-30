@@ -3,7 +3,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
 
-from clubs.models import Clubs, Country, TagClub
+from .forms import AddClubForm
+from .models import Clubs, Country, TagClub
 
 menu = [{'title': 'About', 'url_name': 'about'},
         {'title': 'Add club', 'url_name': 'add_club'},
@@ -44,9 +45,16 @@ def show_club(request, club_slug):
 
 
 def add_club(request):
+    if request.POST:
+        form = AddClubForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data)
+    else:
+        form = AddClubForm()
     context = {
         'menu': menu,
-        'title': 'Adding new club'
+        'title': 'Adding new club',
+        'form': form,
     }
     return render(request, 'clubs/addclub.html', context)
 
