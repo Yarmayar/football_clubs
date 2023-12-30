@@ -44,7 +44,11 @@ def show_club(request, club_slug):
 
 
 def add_club(request):
-    return HttpResponse('Add new club')
+    context = {
+        'menu': menu,
+        'title': 'Adding new club'
+    }
+    return render(request, 'clubs/addclub.html', context)
 
 
 def feedback(request):
@@ -77,7 +81,6 @@ def show_tag_clubslist(request, tag_slug):
         'cntr_selected': None,
     }
     return render(request, 'clubs/index.html', context)
-
 
 
 def page_not_found(request, exception):
