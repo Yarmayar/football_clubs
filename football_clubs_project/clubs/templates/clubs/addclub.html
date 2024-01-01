@@ -4,7 +4,11 @@
 <h1>{{ title }}</h1>
 <form action="" method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <p><button type="submit">Отправить</button></p>
+    <div class="form-error">{{ form.non_field_errors }}</div>
+    {% for one in form %}
+    <p><label class="form-label" for="{{ one.id_for_label }}">{{ one.label }}</label>{{ one }}</p>
+    <div class="form-error">{{ one.errors }}</div>
+    {% endfor%}
+    <p><button type="submit">Add</button></p>
 </form>
 {% endblock %}
