@@ -11,6 +11,6 @@ urlpatterns = [
     path('feedback/', views.feedback, name='feedback'),
     path('login/', views.login, name='login'),
     path('club/<slug:club_slug>', views.show_club, name='club'),
-    path('country/<slug:country_slug>/', views.show_country, name='country'),
-    path('tag/<slug:tag_slug>/', views.show_tag_clubslist, name='tag'),
+    path('country/<slug:country_slug>/', views.ClubsCountry.as_view(), name='country'),
+    path('tag/<slug:tag_slug>/', views.ClubsTag.as_view(), name='tag'),
 ]

@@ -30,7 +30,6 @@ class Clubs(models.Model):
     objects = models.Manager()
     published = PublishedManager()
 
-
     def __str__(self):
         return self.title
 
