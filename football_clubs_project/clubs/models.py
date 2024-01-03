@@ -1,3 +1,4 @@
+from django.core.validators import MinLengthValidator
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.urls import reverse
@@ -19,7 +20,7 @@ class Clubs(models.Model):
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
     time_update = models.DateTimeField(auto_now=True, verbose_name='Время обновления')
     is_published = models.BooleanField(choices=tuple(map(lambda x: (bool(x[0]), x[1]), Status.choices)),
-                                                     default=Status.DRAFT, verbose_name='Статус')
+                                       default=Status.DRAFT, verbose_name='Статус')
     country = models.ForeignKey('Country', on_delete=models.PROTECT, related_name='clubs', verbose_name='Страна')
     tags = models.ManyToManyField('TagClub', blank=True, related_name='tags')
 
@@ -40,6 +41,7 @@ class Clubs(models.Model):
 
     def get_absolute_url(self):
         return reverse('club', kwargs={'club_slug': self.slug})
+
 
     # def save(self, *args, **kwargs):
     #     self.slug = slugify(self.title)
