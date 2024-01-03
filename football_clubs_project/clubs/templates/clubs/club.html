@@ -16,8 +16,8 @@
 {% block content %}
 <h1>{{ title }}</h1>
 
-{% if club.photo %}
-<p><img class="img-article-left" src="{{club.photo.url}}"></p>
+{% if club.logo %}
+  <p><img class="img-article-left" src="{{ club.logo.url }}"></p>
 {% endif %}
 
 {{ club.content|linebreaks }}

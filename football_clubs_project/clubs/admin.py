@@ -1,4 +1,6 @@
 from django.contrib import admin, messages
+from django.utils.safestring import mark_safe
+
 from .models import Clubs, Country
 
 
@@ -21,12 +23,12 @@ class HaveCoach(admin.SimpleListFilter):
 
 @admin.register(Clubs)
 class ClubsAdmin(admin.ModelAdmin):
-    fields = ['title', 'slug', 'content', 'country', 'tags', 'coach']
-    # readonly_fields = ['slug']  # для отображения полей без возможности редактировать их,
+    fields = ['title', 'slug', 'content', 'logo', 'club_logo', 'country', 'tags', 'coach']
+    readonly_fields = ['club_logo']  # для отображения полей без возможности редактировать их,
     # при использовании поля в prepopulated_fields его нельзя оставить нередактируемым
     # exclude = ['title']  # альтернатива field, отображать все, кроме перечисленого
     prepopulated_fields = {'slug': ('title', )}
-    list_display = ['title', 'time_create', 'is_published', 'country', 'brief_info']
+    list_display = ['title', 'club_logo', 'time_create', 'is_published', 'country']
     list_display_links = ['title']
     ordering = ['-time_create', 'title']
     list_editable = ['is_published', 'country']
@@ -35,10 +37,13 @@ class ClubsAdmin(admin.ModelAdmin):
     search_fields = ['title', 'country__name']
     list_filter = [HaveCoach, 'country__name', 'is_published']
     filter_horizontal = ['tags']
+    save_on_top = True
 
-    @admin.display(description='Содержание', ordering='content')
-    def brief_info(self, club: Clubs):
-        return f'{len(club.content)} символов'
+    @admin.display(description='Current logo', ordering='logo')
+    def club_logo(self, club: Clubs):
+        if club.logo:
+            return mark_safe(f'<img src="{club.logo.url}" width=50>')
+        return 'Without logo'
 
     @admin.action(description='Опубликовать записи выбранных клубы')
     def set_published(self, request, queryset):
