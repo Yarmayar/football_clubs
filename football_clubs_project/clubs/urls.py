@@ -10,7 +10,7 @@ urlpatterns = [
     path('addclub/', views.AddClub.as_view(), name='add_club'),
     path('feedback/', views.feedback, name='feedback'),
     path('login/', views.login, name='login'),
-    path('club/<slug:club_slug>', views.show_club, name='club'),
+    path('club/<slug:club_slug>', views.ShowClub.as_view(), name='club'),
     path('country/<slug:country_slug>/', views.ClubsCountry.as_view(), name='country'),
     path('tag/<slug:tag_slug>/', views.ClubsTag.as_view(), name='tag'),
 ]

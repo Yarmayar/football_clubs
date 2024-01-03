@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views import View
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, DetailView
 
 from .forms import AddClubForm, UploadFileForm
 from .models import Clubs, Country, TagClub, UploadFiles
@@ -46,16 +46,22 @@ def about(request):
     return render(request, 'clubs/about.html', data)
 
 
-def show_club(request, club_slug):
-    club = get_object_or_404(Clubs, slug=club_slug)
+class ShowClub(DetailView):
+    # model = Clubs
+    template_name = 'clubs/club.html'
+    slug_url_kwarg = 'club_slug'
+    # pk_url_kwarg = 'pk'  # изначально поиск объекта идет или по slug, или по pk,
+    # если как у нас др имя переменной, то вносим его или здесь, или для слага - slug_url_kwarg
+    context_object_name = 'club'
 
-    data = {
-        'menu': menu,
-        'title': club.title,
-        'club': club,
-        'cntr_selected': None,
-    }
-    return render(request, 'clubs/club.html', data)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = context['club'].title
+        context['menu'] = menu
+        return context
+
+    def get_object(self, queryset=None):  # для контроля получения только отвечающего критериям объекта (published) или 404
+        return get_object_or_404(Clubs.published, slug=self.kwargs[self.slug_url_kwarg])
 
 
 class AddClub(View):
@@ -84,18 +90,6 @@ def login(request):
     return HttpResponse('Authorization form')
 
 
-# def show_country(request, country_slug):
-#     country = get_object_or_404(Country, slug=country_slug)
-#     clubs = Clubs.published.filter(country__slug=country_slug).select_related('country')
-#     data = {
-#         'menu': menu,
-#         'title': country.name,
-#         'clubs': clubs,
-#         'cntr_selected': country.id,
-#     }
-#     return render(request, 'clubs/index.html', context=data)
-
-
 class ClubsCountry(ListView):
     template_name = 'clubs/index.html'
     context_object_name = 'clubs'
@@ -111,18 +105,6 @@ class ClubsCountry(ListView):
         context['menu'] = menu
         context['cntr_selected'] = country.pk
         return context
-
-
-def show_tag_clubslist(request, tag_slug):
-    tag = get_object_or_404(TagClub, slug=tag_slug)
-    clubs = tag.tags.filter(is_published=Clubs.Status.PUBLISHED).select_related('country')
-    context = {
-        'menu': menu,
-        'title': f'Tag: {tag.tag}',
-        'clubs': clubs,
-        'cntr_selected': None,
-    }
-    return render(request, 'clubs/index.html', context)
 
 
 class ClubsTag(ListView):
