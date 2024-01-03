@@ -48,11 +48,8 @@ def add_club(request):
     if request.POST:
         form = AddClubForm(request.POST)
         if form.is_valid():
-            try:
-                Clubs.objects.create(**form.cleaned_data)
-                return redirect('home')
-            except Exception as error:
-                form.add_error(None, error)
+            form.save()
+            redirect('home')
     else:
         form = AddClubForm()
     context = {

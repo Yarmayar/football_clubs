@@ -23,10 +23,11 @@ class Clubs(models.Model):
                                        default=Status.DRAFT, verbose_name='Статус')
     country = models.ForeignKey('Country', on_delete=models.PROTECT, related_name='clubs', verbose_name='Страна')
     tags = models.ManyToManyField('TagClub', blank=True, related_name='tags')
+    coach = models.OneToOneField('Coach', on_delete=models.SET_NULL, null=True, blank=True, related_name='job')
 
     objects = models.Manager()
     published = PublishedManager()
-    coach = models.OneToOneField('Coach', on_delete=models.SET_NULL, null=True, blank=True, related_name='job')
+
 
     def __str__(self):
         return self.title
