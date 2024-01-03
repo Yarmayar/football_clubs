@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
 
-from .forms import AddClubForm
+from .forms import AddClubForm, UploadFileForm
 from .models import Clubs, Country, TagClub
 
 menu = [{'title': 'About', 'url_name': 'about'},
@@ -32,10 +32,15 @@ def handle_uploaded_file(f):
 
 def about(request):
     if request.POST:
-        handle_uploaded_file(request.FILES['file_upload'])
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_uploaded_file(form.cleaned_data['file'])
+    else:
+        form = UploadFileForm()
     data = {
         'menu': menu,
-        'title': 'About'
+        'title': 'About',
+        'form': form,
     }
     return render(request, 'clubs/about.html', data)
 

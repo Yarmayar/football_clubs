@@ -41,3 +41,7 @@ class AddClubForm(forms.ModelForm):
             raise ValidationError('Title field is longer than 75 characters')
 
         return title
+
+
+class UploadFileForm(forms.Form):
+    file = forms.ImageField(label='Club_logo')
