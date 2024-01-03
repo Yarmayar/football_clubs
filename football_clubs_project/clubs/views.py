@@ -1,9 +1,9 @@
 from django.http import HttpResponse, Http404, HttpResponseNotFound, HttpResponsePermanentRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic import TemplateView, ListView, DetailView, FormView
 
 from .forms import AddClubForm, UploadFileForm
 from .models import Clubs, Country, TagClub, UploadFiles
@@ -64,22 +64,18 @@ class ShowClub(DetailView):
         return get_object_or_404(Clubs.published, slug=self.kwargs[self.slug_url_kwarg])
 
 
-class AddClub(View):
-    def get(self, request):
-        form = AddClubForm()
-        context = {
-            'menu': menu,
-            'title': 'Adding new club',
-            'form': form,
-        }
-        return render(request, 'clubs/addclub.html', context)
+class AddClub(FormView):
+    template_name = 'clubs/addclub.html'
+    form_class = AddClubForm
+    success_url = reverse_lazy('home')
+    extra_context = {
+        'menu': menu,
+        'title': 'Adding new club',
+    }
 
-    def post(self, request):
-        form = AddClubForm(request.POST, request.FILES)
-        if form.is_valid():
-            redirect('home')
-            form.save()
-        return redirect('home')
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
 
 def feedback(request):
