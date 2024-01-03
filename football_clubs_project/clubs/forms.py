@@ -24,11 +24,12 @@ class EnglishValidator:
 class AddClubForm(forms.ModelForm):
     country = forms.ModelChoiceField(queryset=Country.objects.all(), empty_label='Choose country')
     coach = forms.ModelChoiceField(queryset=Coach.objects.all(), required=False, empty_label='Vacancy')
+    is_published = forms.BooleanField(initial=True, label='Release')
 
     class Meta:
         model = Clubs
         # fields = '__all__'
-        fields = ['title', 'slug', 'content', 'is_published', 'country', 'tags', 'coach']
+        fields = ['title', 'slug', 'content', 'logo', 'is_published', 'country', 'tags', 'coach']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-input'}),
             'content': forms.Textarea(attrs={'cols': 50, 'rows': 5}),

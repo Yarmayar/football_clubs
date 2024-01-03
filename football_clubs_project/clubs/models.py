@@ -14,14 +14,16 @@ class Clubs(models.Model):
         DRAFT = 0, 'Draft'  # 0 будет записываться в БД, текст будет отображаться в виджетах
         PUBLISHED = 1, 'Published'
 
-    title = models.CharField(max_length=255, verbose_name='Название')
+    title = models.CharField(max_length=255, verbose_name='Title')
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
-    content = models.TextField(blank=True, verbose_name='Содержание')
-    time_create = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
-    time_update = models.DateTimeField(auto_now=True, verbose_name='Время обновления')
+    content = models.TextField(blank=True, verbose_name='Content')
+    logo = models.ImageField(upload_to='logos/%Y/%m/%d/', default=None, blank=True,
+                             null=True, verbose_name='Logo')
+    time_create = models.DateTimeField(auto_now_add=True, verbose_name='Time_create')
+    time_update = models.DateTimeField(auto_now=True, verbose_name='Time_update')
     is_published = models.BooleanField(choices=tuple(map(lambda x: (bool(x[0]), x[1]), Status.choices)),
                                        default=Status.DRAFT, verbose_name='Статус')
-    country = models.ForeignKey('Country', on_delete=models.PROTECT, related_name='clubs', verbose_name='Страна')
+    country = models.ForeignKey('Country', on_delete=models.PROTECT, related_name='clubs', verbose_name='Country')
     tags = models.ManyToManyField('TagClub', blank=True, related_name='tags')
     coach = models.OneToOneField('Coach', on_delete=models.SET_NULL, null=True, blank=True, related_name='job')
 
@@ -85,3 +87,7 @@ class Coach(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class UploadFiles(models.Model):
+    file = models.FileField(upload_to='uploads_model')
