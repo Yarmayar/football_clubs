@@ -2,6 +2,8 @@ from django.http import HttpResponse, Http404, HttpResponseNotFound, HttpRespons
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django.views import View
+from django.views.generic import TemplateView
 
 from .forms import AddClubForm, UploadFileForm
 from .models import Clubs, Country, TagClub, UploadFiles
@@ -23,6 +25,23 @@ def index(request):
     }
     return render(request, 'clubs/index.html', context=data)
 
+
+class ClubsHome(TemplateView):
+    template_name = 'clubs/index.html'
+    extra_context = {
+        'menu': menu,
+        'title': 'Main Page',
+        'clubs': Clubs.published.all().select_related('country'),
+        'cntr_selected': 0,
+    }
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['title'] = 'Main Page'
+    #     context['menu'] = menu
+    #     context['clubs'] = Clubs.published.all().select_related('country')
+    #     context['cntr_selected'] = int(self.request.GET.get('country_id', 0))
+    #     return context
 
 def about(request):
     if request.POST:
@@ -57,9 +76,8 @@ def add_club(request):
     if request.POST:
         form = AddClubForm(request.POST, request.FILES)
         if form.is_valid():
-            redirect('home')
             form.save()
-
+            return redirect('home')
     else:
         form = AddClubForm()
     context = {
@@ -68,6 +86,24 @@ def add_club(request):
         'form': form,
     }
     return render(request, 'clubs/addclub.html', context)
+
+
+class AddClub(View):
+    def get(self, request):
+        form = AddClubForm()
+        context = {
+            'menu': menu,
+            'title': 'Adding new club',
+            'form': form,
+        }
+        return render(request, 'clubs/addclub.html', context)
+
+    def post(self, request):
+        form = AddClubForm(request.POST, request.FILES)
+        if form.is_valid():
+            redirect('home')
+            form.save()
+        return redirect('home')
 
 
 def feedback(request):
