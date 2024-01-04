@@ -13,4 +13,6 @@ urlpatterns = [
     path('club/<slug:club_slug>', views.ShowClub.as_view(), name='club'),
     path('country/<slug:country_slug>/', views.ClubsCountry.as_view(), name='country'),
     path('tag/<slug:tag_slug>/', views.ClubsTag.as_view(), name='tag'),
+    path('edit-club/<slug:slug>/', views.UpdateClub.as_view(), name='edit-club'),
+    path('delete-club/<slug:slug>/', views.DeleteClub.as_view(), name='delete-club'),
 ]

@@ -2,8 +2,9 @@ from django.http import HttpResponse, Http404, HttpResponseNotFound, HttpRespons
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
+from django.utils.text import slugify
 from django.views import View
-from django.views.generic import TemplateView, ListView, DetailView, FormView
+from django.views.generic import TemplateView, ListView, DetailView, FormView, CreateView, UpdateView, DeleteView
 
 from .forms import AddClubForm, UploadFileForm
 from .models import Clubs, Country, TagClub, UploadFiles
@@ -64,18 +65,39 @@ class ShowClub(DetailView):
         return get_object_or_404(Clubs.published, slug=self.kwargs[self.slug_url_kwarg])
 
 
-class AddClub(FormView):
+class AddClub(CreateView):
     template_name = 'clubs/addclub.html'
-    form_class = AddClubForm
-    success_url = reverse_lazy('home')
+    form_class = AddClubForm # или связываем представление с формой, или указываем модель и отображ поля модели
+    # model = Clubs
+    # fields = '__all__'
+    # success_url = reverse_lazy('home')
     extra_context = {
         'menu': menu,
         'title': 'Adding new club',
     }
 
+
+class UpdateClub(UpdateView):
+    template_name = 'clubs/addclub.html'
+    model = Clubs
+    fields = ['title', 'content', 'logo', 'country', 'is_published', 'coach', 'tags']
+    extra_context = {
+        'menu': menu,
+        'title': 'Edit club',
+    }
+
     def form_valid(self, form):
-        form.save()
+        form.instance.slug = slugify(form.instance.title)
         return super().form_valid(form)
+
+
+class DeleteClub(DeleteView):
+    model = Clubs
+    success_url = reverse_lazy('home')
+    extra_context = {
+        'menu': menu,
+        'title': 'Delete club',
+    }
 
 
 def feedback(request):
