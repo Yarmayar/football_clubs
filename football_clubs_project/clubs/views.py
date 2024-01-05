@@ -8,23 +8,14 @@ from django.views.generic import TemplateView, ListView, DetailView, FormView, C
 
 from .forms import AddClubForm, UploadFileForm
 from .models import Clubs, Country, TagClub, UploadFiles
-
-menu = [{'title': 'About', 'url_name': 'about'},
-        {'title': 'Add club', 'url_name': 'add_club'},
-        {'title': 'Feedback', 'url_name': 'feedback'},
-        {'title': 'Login', 'url_name': 'login'}
-        ]
+from .utils import DataMixin
 
 
-class ClubsHome(ListView):
-    # model = Clubs
+class ClubsHome(DataMixin, ListView):
     template_name = 'clubs/index.html'
     context_object_name = 'clubs'  #  по умолчанию список объектов модели содержится в self.object_list
-    extra_context = {
-        'menu': menu,
-        'title': 'Main Page',
-        'cntr_selected': 0,
-    }
+    page_title = 'Main page'
+    cntr_selected = 0
 
     def get_queryset(self):  # для получения кастомиз списка объектов модели (стат опубликовано)
         return Clubs.published.all().select_related('country')
@@ -40,14 +31,13 @@ def about(request):
     else:
         form = UploadFileForm()
     data = {
-        'menu': menu,
         'title': 'About',
         'form': form,
     }
     return render(request, 'clubs/about.html', data)
 
 
-class ShowClub(DetailView):
+class ShowClub(DataMixin, DetailView):
     # model = Clubs
     template_name = 'clubs/club.html'
     slug_url_kwarg = 'club_slug'
@@ -57,47 +47,36 @@ class ShowClub(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = context['club'].title
-        context['menu'] = menu
-        return context
+        return self.get_mixin_context(context, title=context['club'].title)
 
     def get_object(self, queryset=None):  # для контроля получения только отвечающего критериям объекта (published) или 404
         return get_object_or_404(Clubs.published, slug=self.kwargs[self.slug_url_kwarg])
 
 
-class AddClub(CreateView):
+class AddClub(DataMixin, CreateView):
     template_name = 'clubs/addclub.html'
     form_class = AddClubForm # или связываем представление с формой, или указываем модель и отображ поля модели
+    page_title = 'Adding new club'
     # model = Clubs
     # fields = '__all__'
     # success_url = reverse_lazy('home')
-    extra_context = {
-        'menu': menu,
-        'title': 'Adding new club',
-    }
 
 
-class UpdateClub(UpdateView):
+class UpdateClub(DataMixin, UpdateView):
     template_name = 'clubs/addclub.html'
     model = Clubs
     fields = ['title', 'content', 'logo', 'country', 'is_published', 'coach', 'tags']
-    extra_context = {
-        'menu': menu,
-        'title': 'Edit club',
-    }
+    page_title = 'Edit club'
 
     def form_valid(self, form):
         form.instance.slug = slugify(form.instance.title)
         return super().form_valid(form)
 
 
-class DeleteClub(DeleteView):
+class DeleteClub(DataMixin, DeleteView):
     model = Clubs
     success_url = reverse_lazy('home')
-    extra_context = {
-        'menu': menu,
-        'title': 'Delete club',
-    }
+    page_title = 'Delete club'
 
 
 def feedback(request):
@@ -108,7 +87,7 @@ def login(request):
     return HttpResponse('Authorization form')
 
 
-class ClubsCountry(ListView):
+class ClubsCountry(DataMixin, ListView):
     template_name = 'clubs/index.html'
     context_object_name = 'clubs'
     allow_empty = False  # при пустом списке объектов (напр несуществующий country_slug) будет генерироваться ошибка 404
@@ -120,12 +99,11 @@ class ClubsCountry(ListView):
         context = super().get_context_data(**kwargs)
         country = context['clubs'][0].country
         context['title'] = 'Clubs of ' + country.name
-        context['menu'] = menu
         context['cntr_selected'] = country.pk
-        return context
+        return self.get_mixin_context(context)
 
 
-class ClubsTag(ListView):
+class ClubsTag(DataMixin, ListView):
     template_name = 'clubs/index.html'
     context_object_name = 'clubs'
     allow_empty = False
@@ -137,9 +115,7 @@ class ClubsTag(ListView):
         context = super().get_context_data(**kwargs)
         tag = TagClub.objects.get(slug=self.kwargs['tag_slug'])
         context['title'] = f'Tag: {tag}'
-        context['menu'] = menu
-        context['cntr_selected'] = None
-        return context
+        return self.get_mixin_context(context)
 
 
 def page_not_found(request, exception):
