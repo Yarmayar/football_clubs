@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.http import HttpResponse, Http404, HttpResponseNotFound, HttpResponsePermanentRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
@@ -22,17 +23,13 @@ class ClubsHome(DataMixin, ListView):
 
 
 def about(request):
-    if request.POST:
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            file_object = UploadFiles(file=form.cleaned_data['file'])
-            file_object.save()
-
-    else:
-        form = UploadFileForm()
+    clubs_list = Clubs.published.all()
+    paginator = Paginator(clubs_list, 4, orphans=3)
+    page_number = request.GET.get('page')
+    page_object = paginator.get_page(page_number)
     data = {
         'title': 'About',
-        'form': form,
+        'page_object': page_object,
     }
     return render(request, 'clubs/about.html', data)
 
