@@ -1,6 +1,7 @@
 {% load static %}
 {% load clubs_tags %}
 
+<!DOCTYPE html>
 <html>
 <head>
 	<title>{{title}}</title>
@@ -36,11 +37,14 @@
 		{% else %}
 		<li><a href="{% url 'home' %}">All clubs</a></li>
 		{% endif %}
+
 		{% show_countries cntr_selected %}
+
 		<li class="share">
 		<p>Our Channel</p>
 		<a class="share-yt" href="https://www.youtube.com/channel/UClJzWfGWuGJL2t-3dYKcHTA/playlists" target="_blank" rel="nofollow"></a>
 		</li>
+
 		<li>{% show_all_tags %}</li>
 	</ul>
 </td>
@@ -48,7 +52,6 @@
 <td valign="top" class="content">
 	<!-- Хлебные крошки -->
 	{% block breadcrumbs %}
-
 	{% endblock %}
 
 <!-- Блок контента -->
@@ -57,6 +60,9 @@
 {% endblock %}
 	</div>
 <!-- Конец блока контента -->
+
+{% block navigation %}
+{% endblock %}
 
 </td></tr></table>
 </td></tr>

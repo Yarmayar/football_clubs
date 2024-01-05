@@ -18,6 +18,7 @@ class ClubsHome(DataMixin, ListView):
     page_title = 'Main page'
     cntr_selected = 0
 
+
     def get_queryset(self):  # для получения кастомиз списка объектов модели (стат опубликовано)
         return Clubs.published.all().select_related('country')
 

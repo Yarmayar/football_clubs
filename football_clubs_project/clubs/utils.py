@@ -6,6 +6,8 @@ menu = [{'title': 'About', 'url_name': 'about'},
 
 
 class DataMixin:
+    paginate_by = 5
+    paginate_orphans = 2
     page_title = None
     cntr_selected = None
     extra_context = {}
