@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.http import HttpResponse, Http404, HttpResponseNotFound, HttpResponsePermanentRedirect
 from django.shortcuts import render, redirect, get_object_or_404
@@ -18,11 +20,11 @@ class ClubsHome(DataMixin, ListView):
     page_title = 'Main page'
     cntr_selected = 0
 
-
     def get_queryset(self):  # для получения кастомиз списка объектов модели (стат опубликовано)
         return Clubs.published.all().select_related('country')
 
 
+@login_required
 def about(request):
     clubs_list = Clubs.published.all()
     paginator = Paginator(clubs_list, 4, orphans=3)
@@ -51,13 +53,15 @@ class ShowClub(DataMixin, DetailView):
         return get_object_or_404(Clubs.published, slug=self.kwargs[self.slug_url_kwarg])
 
 
-class AddClub(DataMixin, CreateView):
+class AddClub(LoginRequiredMixin, DataMixin, CreateView):
     template_name = 'clubs/addclub.html'
     form_class = AddClubForm # или связываем представление с формой, или указываем модель и отображ поля модели
     page_title = 'Adding new club'
-    # model = Clubs
-    # fields = '__all__'
-    # success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        club = form.save(commit=False)
+        club.author = self.request.user
+        return super().form_valid(form)
 
 
 class UpdateClub(DataMixin, UpdateView):

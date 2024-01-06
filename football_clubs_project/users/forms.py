@@ -12,3 +12,29 @@ class LoginUserForm(AuthenticationForm):
     class Meta:
         model = get_user_model()
 
+
+class RegisterUserForm(forms.ModelForm):
+    username = forms.CharField(label='Login')
+    password = forms.CharField(label='Password', widget=forms.PasswordInput())
+    password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput())
+
+    class Meta:
+        model = get_user_model()
+        fields = ['username', 'email', 'first_name', 'last_name', 'password', 'password2']
+        labels = {
+            'email': 'E-mail',
+            'first_name': 'First_name',
+            'last_name': 'Last_name',
+        }
+
+    def clean_password2(self):
+        cd = self.cleaned_data
+        if cd['password'] != cd['password2']:
+            return forms.ValidationError('Password mismatch!')
+        return cd['password']
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if get_user_model().objects.filter(email=email).exists():
+            return forms.ValidationError('The e-mail address you entered is already in use in another account.')
+        return email

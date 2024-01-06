@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Welcome to the football clubs site, {{ name }}</h2>
+<p>To enter the site you must log in</p>
+<p><button><a href="{% url 'users:login' %}">Login</a></button></p>
+{% endblock %}

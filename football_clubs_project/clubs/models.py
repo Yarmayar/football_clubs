@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.core.validators import MinLengthValidator
 from django.db import models
 from django.template.defaultfilters import slugify
@@ -26,6 +27,8 @@ class Clubs(models.Model):
     country = models.ForeignKey('Country', on_delete=models.PROTECT, related_name='clubs', verbose_name='Country')
     tags = models.ManyToManyField('TagClub', blank=True, related_name='tags')
     coach = models.OneToOneField('Coach', on_delete=models.SET_NULL, null=True, blank=True, related_name='job')
+    author = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL,
+                               related_name='clubs', null=True, default=None)
 
     objects = models.Manager()
     published = PublishedManager()

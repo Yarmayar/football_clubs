@@ -5,7 +5,8 @@
 	{% for club in clubs %}
 			<li><div class="article-panel">
 	<p class="first">Country: {{ club.country.name }}</p>
-	<p class="last">Info updated: {{ club.time_update|date:"d-m-Y H:i:s" }}</p>
+	<p class="last">author:
+	{{ club.author.username|default:"unknown" }} &nbsp; | &nbsp; Info updated: {{ club.time_update|date:"d-m-Y H:i:s" }}</p>
 	</div>
 {% if club.logo %}
 		<p><img class="img-article-left thumb" src="{{ club.logo.url }}"></p>
