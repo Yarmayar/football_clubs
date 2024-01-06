@@ -3,6 +3,7 @@ from django.db.models import Count
 
 from clubs import views
 from clubs.models import Country, TagClub
+from clubs.utils import menu
 
 register = template.Library()
 
@@ -10,6 +11,11 @@ register = template.Library()
 @register.simple_tag()
 def get_countries():
     return views.cntr_db
+
+
+@register.simple_tag()
+def get_menu():
+    return menu
 
 
 @register.inclusion_tag('clubs/list_countries.html')
