@@ -3,7 +3,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView
 
 from users.forms import LoginUserForm, RegisterUserForm
 
@@ -29,3 +30,10 @@ def register(request):
     else:
         form = RegisterUserForm()
     return render(request, 'users/register.html', {'form': form})
+
+
+class RegisterUser(CreateView):
+    template_name = 'users/register.html'
+    form_class = RegisterUserForm
+    extra_context = {'title': 'Registration'}
+    success_url = reverse_lazy('users:login')
