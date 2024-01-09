@@ -6,4 +6,4 @@ uploads/
 *.png
 *.jpeg
 *.sqlite3
-passwords.txt
+*.txt
