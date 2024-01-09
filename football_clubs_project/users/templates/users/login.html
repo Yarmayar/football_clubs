@@ -11,5 +11,7 @@
     <div class="form-error">{{ one.errors }}</div>
     {% endfor%}
     <p><button type="submit">Confirm</button></p>
+
+    <p><a href="{% url 'users:password_reset' %}">Forgot password?</a></p>
 </form>
 {% endblock %}
