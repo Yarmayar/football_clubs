@@ -16,7 +16,7 @@ class Clubs(models.Model):
         PUBLISHED = 1, 'Published'
 
     title = models.CharField(max_length=255, verbose_name='Title')
-    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, blank=True, verbose_name='URL')
     content = models.TextField(blank=True, verbose_name='Content')
     logo = models.ImageField(upload_to='logos/%Y/%m/%d/', default=None, blank=True,
                              null=True, verbose_name='Logo')
@@ -47,10 +47,9 @@ class Clubs(models.Model):
     def get_absolute_url(self):
         return reverse('club', kwargs={'club_slug': self.slug})
 
-
-    # def save(self, *args, **kwargs):
-    #     self.slug = slugify(self.title)
-    #     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
 
 class Country(models.Model):
@@ -76,6 +75,14 @@ class TagClub(models.Model):
     tag = models.CharField(max_length=100, db_index=True)
     slug = models.SlugField(max_length=255, unique=True, db_index=True)
 
+    class Meta:
+        verbose_name = 'Тэг'
+        verbose_name_plural = 'Тэги'
+        ordering = ['id']
+        indexes = [
+            models.Index(fields=['tag'])
+        ]
+
     def __str__(self):
         return self.tag
 
@@ -85,10 +92,19 @@ class TagClub(models.Model):
 
 class Coach(models.Model):
     name = models.TextField(max_length=255)
-    age = models.IntegerField(null=True)
+    date_birth = models.DateField(blank=True, null=True, verbose_name='Birth day')
+    citizenship = models.ForeignKey('Country', blank=True, null=True, on_delete=models.PROTECT, related_name='coaches', verbose_name='Citizenship')
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = 'Тренер'
+        verbose_name_plural = 'Тренеры'
+        ordering = ['name']
+        indexes = [
+            models.Index(fields=['name'])
+        ]
 
 
 class UploadFiles(models.Model):

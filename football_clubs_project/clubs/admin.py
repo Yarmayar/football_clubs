@@ -1,7 +1,8 @@
 from django.contrib import admin, messages
 from django.utils.safestring import mark_safe
+from datetime import date
 
-from .models import Clubs, Country
+from .models import Clubs, Country, Coach, TagClub
 
 
 class HaveCoach(admin.SimpleListFilter):
@@ -23,7 +24,7 @@ class HaveCoach(admin.SimpleListFilter):
 
 @admin.register(Clubs)
 class ClubsAdmin(admin.ModelAdmin):
-    fields = ['title', 'slug', 'content', 'logo', 'club_logo', 'country', 'tags', 'coach']
+    fields = ['title', 'slug', 'content', 'logo', 'club_logo', 'country', 'is_published', 'author', 'tags', 'coach']
     readonly_fields = ['club_logo']  # для отображения полей без возможности редактировать их,
     # при использовании поля в prepopulated_fields его нельзя оставить нередактируемым
     # exclude = ['title']  # альтернатива field, отображать все, кроме перечисленого
@@ -62,3 +63,24 @@ class ClubsAdmin(admin.ModelAdmin):
 class CountryAdmin(admin.ModelAdmin):
     list_display = ['id', 'name']
     list_display_links = ['id', 'name']
+
+
+@admin.register(Coach)
+class CoachAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'age', 'citizenship']
+    list_display_links = ['id', 'name']
+
+    @admin.display(description='Age')
+    def age(self, coach: Coach):
+        if coach.date_birth:
+            birth = coach.date_birth
+            today = date.today()
+            return today.year - birth.year - ((today.month, today.day) < (birth.month, birth.day))
+        return 'Without age'
+
+
+@admin.register(TagClub)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ['id', 'tag', 'slug']
+    list_display_links = ['id', 'tag']
+    prepopulated_fields = {'slug': ('tag',)}
