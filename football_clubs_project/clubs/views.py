@@ -1,5 +1,5 @@
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.paginator import Paginator
 from django.http import HttpResponse, Http404, HttpResponseNotFound, HttpResponsePermanentRedirect
 from django.shortcuts import render, redirect, get_object_or_404
@@ -53,10 +53,11 @@ class ShowClub(DataMixin, DetailView):
         return get_object_or_404(Clubs.published, slug=self.kwargs[self.slug_url_kwarg])
 
 
-class AddClub(LoginRequiredMixin, DataMixin, CreateView):
+class AddClub(PermissionRequiredMixin, LoginRequiredMixin, DataMixin, CreateView):
     template_name = 'clubs/addclub.html'
     form_class = AddClubForm # или связываем представление с формой, или указываем модель и отображ поля модели
     page_title = 'Adding new club'
+    permission_required = 'clubs.add_clubs'  # <имя_приложения>.<действие>_<название_таблицы>
 
     def form_valid(self, form):
         club = form.save(commit=False)
@@ -64,11 +65,12 @@ class AddClub(LoginRequiredMixin, DataMixin, CreateView):
         return super().form_valid(form)
 
 
-class UpdateClub(DataMixin, UpdateView):
+class UpdateClub(PermissionRequiredMixin, DataMixin, UpdateView):
     template_name = 'clubs/addclub.html'
     model = Clubs
     fields = ['title', 'content', 'logo', 'country', 'is_published', 'coach', 'tags']
     page_title = 'Edit club'
+    permission_required = 'clubs.change_clubs'
 
     def form_valid(self, form):
         form.instance.slug = slugify(form.instance.title)
@@ -81,6 +83,7 @@ class DeleteClub(DataMixin, DeleteView):
     page_title = 'Delete club'
 
 
+@permission_required(perm='clubs.view_clubs', raise_exception=True)
 def feedback(request):
     return HttpResponse('Tell us what you want')
 

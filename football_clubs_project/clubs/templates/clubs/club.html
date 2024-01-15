@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 
 {% block breadcrumbs %}
+{% if perms.clubs.change_clubs %}
+<p align="right"><a href="{% url 'edit-club' club.slug %}">Edit club</a></p>
+{% endif %}
+
 {% with club.tags.all as tags %}
 {% if tags %}
   <ul class="tags-list">
